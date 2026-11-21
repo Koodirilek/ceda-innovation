@@ -1,0 +1,24 @@
+{
+  "name": "ceda-innovation-portal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "dev": "node --watch --disable-warning=ExperimentalWarning server.js",
+    "test": "node --disable-warning=ExperimentalWarning --test test/api.test.js",
+    "test:ui": "node --disable-warning=ExperimentalWarning test/ui.smoke.mjs",
+    "bench": "node scripts/bench.mjs",
+    "bench:mixed": "node scripts/bench-mixed.mjs"
+  },
+  "dependencies": {
+    "compression": "^1.8.2",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "jsdom": "^26.0.0"
+  }
+}
