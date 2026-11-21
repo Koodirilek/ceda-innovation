@@ -27,7 +27,7 @@ function staticGzip(req, res, next) {
   let st; try { st = fs.statSync(file); } catch { return next(); }
   let e = gzCache.get(file);
   if (!e || e.mtime !== st.mtimeMs) { e = { mtime: st.mtimeMs, gz: zlib.gzipSync(fs.readFileSync(file), { level: 9 }), etag: `"${st.size.toString(16)}-${Math.round(st.mtimeMs).toString(16)}"` }; gzCache.set(file, e); }
-  res.set({ 'Content-Type': type, 'Content-Encoding': 'gzip', Vary: 'Accept-Encoding', ETag: e.etag, 'Cache-Control': PROD ? 'public, max-age=3600' : 'no-cache' });
+  res.set({ 'Content-Type': type, 'Content-Encoding': 'gzip', Vary: 'Accept-Encoding', ETag: e.etag, 'Cache-Control': PROD ? 'public, max-age=300' : 'no-cache' });
   if (req.headers['if-none-match'] === e.etag) return res.status(304).end();
   res.send(e.gz);
 }
@@ -55,7 +55,7 @@ app.use('/api/ideas', ideas);
 app.use('/api/chat', chat);
 app.use('/api', misc);
 app.use('/api', (req, res) => res.status(404).json({ message: 'Not found.' }));
-app.use(express.static(PUBLIC, { extensions: ['html'], maxAge: PROD ? '1h' : 0, etag: true }));
+app.use(express.static(PUBLIC, { extensions: ['html'], maxAge: PROD ? '5m' : 0, etag: true }));
 app.use((err, req, res, next) => {
   const s = err.status || (err.type === 'entity.too.large' ? 413 : 500);
   if (s === 500) console.error(err);

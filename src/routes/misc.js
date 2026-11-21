@@ -3,7 +3,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { q, FILES } from '../db.js';
-import { need, bad, now, txt, hashPwAsync, strongPw, normId, isEmail, audit, sseAdd, ideaAvg, ROLES_LIST } from '../lib.js';
+import { need, bad, now, txt, hashPwAsync, strongPw, normId, isEmail, audit, sseAdd, ideaAvg, ROLES_LIST, DEV_OTP } from '../lib.js';
 import { chatOpen } from './chat.js';
 
 const r = Router();
@@ -110,6 +110,13 @@ r.put('/admin/criteria/:id', need('admin'), (req, res) => { q.run('UPDATE criter
 r.delete('/admin/criteria/:id', need('admin'), (req, res) => { q.run('UPDATE criteria SET active=0 WHERE id=?', Number(req.params.id)); audit(req, 'deactivate', 'criteria', Number(req.params.id)); res.json({ ok: true }); });
 r.get('/admin/audit', need('admin'), (req, res) => res.json(q.all('SELECT a.*,u.name user FROM audit_log a LEFT JOIN users u ON u.id=a.user_id ORDER BY a.id DESC LIMIT 300')));
 r.get('/admin/outbox', need('admin'), (req, res) => res.json(q.all('SELECT * FROM outbox ORDER BY id DESC LIMIT 150')));
+
+// ---- demonstration mode: one-click demo roles for judges (only offered while demo data is loaded) ----
+const DEMO = [['Submitter', 'submitter@demo.bw'], ['Second submitter', 'submitter2@demo.bw'], ['Evaluator', 'evaluator1@demo.bw'], ['Second evaluator', 'evaluator2@demo.bw'], ['Adjudicator', 'adjudicator@demo.bw'], ['Administrator', 'admin@demo.bw'], ['Committee observer', 'observer@demo.bw'], ['Consultant (chat)', 'agent@demo.bw']];
+r.get('/demo', (req, res) => {
+  const on = DEV_OTP && process.env.SEED_DEMO !== 'false' && !!q.get("SELECT 1 x FROM users WHERE email='admin@demo.bw'");
+  res.json(on ? { demo: true, password: 'Demo@1234', accounts: DEMO.map(([label, email]) => ({ label, email })) } : { demo: false });
+});
 
 // ---- 24/7 assistant (rule-based, runs entirely on this server: no data leaves Botswana) ----
 const STOP = new Set('the and for how can what when where does with you your are this that have from not but any all was our out get has his her its who why too use'.split(' '));

@@ -50,6 +50,7 @@ input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(23
 [hidden]{display:none!important}
 footer{text-align:center;font-size:13px;color:var(--mute);padding:18px}
 @media(max-width:860px){main{grid-template-columns:1fr}.side{display:none}.bar img{height:56px}}
+.demo{margin-top:22px;padding-top:16px;border-top:1px dashed #d9cbc1}.demo h3{font-size:15px;color:var(--maroon)}.demo p{font-size:13px;color:var(--mute);margin:4px 0 10px}.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.demo-grid button{height:40px;border:1.5px solid var(--orange);border-radius:999px;background:#fff;color:var(--brick);font:inherit;font-weight:600;font-size:13px;cursor:pointer}.demo-grid button:hover{background:var(--orange);color:#fff}
 </style>
 </head>
 <body>
@@ -79,6 +80,7 @@ footer{text-align:center;font-size:13px;color:var(--mute);padding:18px}
 
 <form data-view="register" novalidate hidden>
 <h2>Create your account</h2><p class="lede">It is free and takes a minute. We will send a code to confirm your details.</p>
+<p class="hint" style="margin:-12px 0 12px"><b>Demonstration site:</b> please use test details, not your real personal information.</p>
 <label for="r-name">Full name</label>
 <input id="r-name" name="name" type="text" autocomplete="name" required>
 <label for="r-email">Email address</label>

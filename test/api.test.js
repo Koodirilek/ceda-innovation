@@ -165,3 +165,9 @@ test('duplicate-idea detection: private to submitters, visible to admin and adju
   assert.equal(ok(await adj.call('GET', `/ideas/${id}`)).similar.length > 0, true);
   assert.deepEqual(ok(await sub.call('GET', `/ideas/${id}`)).similar, []);
 });
+
+test('demo mode offers one-click demo roles to judges', async () => {
+  const d = await (await fetch(base + '/demo')).json();
+  assert.equal(d.demo, true); assert.ok(d.accounts.some(a => a.email === 'admin@demo.bw') && d.accounts.length >= 6);
+  const c = client(); const r = await c.login(d.accounts[0].email, d.password); assert.equal(r.data.ok, true);
+});

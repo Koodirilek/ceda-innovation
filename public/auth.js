@@ -151,3 +151,23 @@ resend.addEventListener('click', async () => {
 
 const start = location.hash.slice(1);
 show(views.some(v => v.dataset.view === start) && ['login','register','otp','forgot'].includes(start) ? start : 'login');
+
+// Demonstration mode: one-click sign-in for judges and testers (the server only offers this while demo data is loaded).
+(async () => {
+  try {
+    const d = await (await fetch(API + '/demo')).json(); if (!d.demo) return;
+    const box = document.createElement('div'); box.className = 'demo';
+    const h = document.createElement('h3'); h.textContent = 'Judges and testers: try a demo role'; box.appendChild(h);
+    const p = document.createElement('p'); p.textContent = 'One click signs you in with invented demo data. No real personal information is stored, and the data resets when the demo host restarts.'; box.appendChild(p);
+    const g = document.createElement('div'); g.className = 'demo-grid';
+    for (const a of d.accounts) {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = a.label;
+      b.addEventListener('click', async () => {
+        b.disabled = true; const r = await api('/auth/login', { identifier: a.email, password: d.password });
+        if (r.ok) location.href = 'app/'; else { b.disabled = false; say(F('login'), (r.data && r.data.message) || 'Could not sign in to the demo account.'); }
+      });
+      g.appendChild(b);
+    }
+    box.appendChild(g); F('login').appendChild(box);
+  } catch (e) { /* demo panel is optional */ }
+})();

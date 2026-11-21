@@ -1,9 +1,12 @@
 import crypto from 'node:crypto';
 import { q } from './db.js';
 
-export const PROD = process.env.NODE_ENV === 'production';
-const SECRET = process.env.SESSION_SECRET || 'dev-only-secret-change-me';
-if (PROD && !process.env.SESSION_SECRET) throw new Error('Set SESSION_SECRET in production.');
+export const PROD = process.env.NODE_ENV === 'production' || !!process.env.RENDER; // Render sets RENDER=true
+const SECRET = process.env.SESSION_SECRET || (PROD ? crypto.randomBytes(32).toString('hex') : 'dev-only-secret-change-me');
+if (PROD && !process.env.SESSION_SECRET) {
+  if (process.env.NODE_ENV === 'production' && !process.env.RENDER) throw new Error('Set SESSION_SECRET in production.');
+  console.warn('WARNING: SESSION_SECRET is not set. Using a temporary secret, so sign-ins reset when the server restarts. Set SESSION_SECRET in your host settings.');
+}
 const SECURE = process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === 'true' : PROD; // set COOKIE_SECURE=false only if serving plain HTTP
 export const DEV_OTP = process.env.DEV_SHOW_OTP !== 'false'; // demo mode: show OTP codes on screen (no SMS/email gateway yet)
 export const now = () => new Date().toISOString();

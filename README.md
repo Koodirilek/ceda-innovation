@@ -46,12 +46,15 @@ New users can self-register; in demo mode the 6-digit code is shown on screen (n
 | Hosting, region, costs, fault support | `docs/DEPLOY-AWS.md` (AWS Cape Town plus synchronised copy at BTC) and `docs/DEPLOY-BOTSWANA.md` (support targets) |
 | Beyond the spec | **Duplicate-idea detection**, 24/7 on-server assistant, blind review, version history, observer redaction, webhooks |
 
+## Live prototype and hosting
+Prototype: https://ceda-innovation.onrender.com (Render free tier, invented demo data; see `docs/DEPLOY-RENDER.md`). The sign-in page offers one-click demo roles for judges. Production design: AWS Africa (Cape Town) with a synchronised copy at BTC Sentlhaga Data Center, Gaborone (see `docs/DEPLOY-AWS.md`).
+
 ## Duplicate-idea detection
 While a submitter types, the form checks the text against every submitted idea (TF-IDF similarity, `src/similar.js`) and shows a traffic-light notice: none, possible overlap or very similar. Submitters are never shown other people's ideas, only whether similar ones exist, and their own earlier similar ideas. When an idea is submitted with a 60%+ match, administrators get an alert, and administrators and adjudicators see a **Similar ideas** panel with links and scores. It runs on the portal server, so idea text never leaves Botswana.
 
 ## Tests
 ```bash
-npm test             # 6 API tests: auth, workflow, RBAC, content, chat, duplicates
+npm test             # 7 API tests: auth, workflow, RBAC, content, chat, duplicates
 npm install --no-save jsdom && npm run test:ui   # opens every screen for every role
 ```
 
